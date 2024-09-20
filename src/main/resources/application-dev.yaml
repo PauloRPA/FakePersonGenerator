@@ -14,6 +14,13 @@ dicebear:
   format: /svg
   seed: ?seed={seed}
 
+api:
+  profile:
+    picture:
+      format: svg
+      mime: image/svg+xml
+
+
 spring:
 
   application:
