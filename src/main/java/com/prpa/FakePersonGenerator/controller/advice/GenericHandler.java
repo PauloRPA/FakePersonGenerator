@@ -1,5 +1,6 @@
 package com.prpa.FakePersonGenerator.controller.advice;
 
+import com.prpa.FakePersonGenerator.model.exceptions.AlreadyExistsException;
 import com.prpa.FakePersonGenerator.model.exceptions.EmptyDatabaseException;
 import com.prpa.FakePersonGenerator.model.exceptions.GenericResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class GenericHandler {
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ProblemDetail catchRegionExists(AlreadyExistsException ex) {
+        String message = "The value %s in %s already exists".formatted(ex.getValue(), ex.getField());
+        if (!ex.getMessage().isBlank()) message = ex.getMessage();
+
+        ProblemDetail pb = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, message);
+        pb.setTitle(ex.getField() + " already exists.");
+        return pb;
+    }
 
     @ExceptionHandler(EmptyDatabaseException.class)
     public ProblemDetail catchEmptyDb(EmptyDatabaseException ex) {

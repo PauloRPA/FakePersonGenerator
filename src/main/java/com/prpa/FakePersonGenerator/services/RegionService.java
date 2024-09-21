@@ -2,7 +2,7 @@ package com.prpa.FakePersonGenerator.services;
 
 import com.prpa.FakePersonGenerator.model.Region;
 import com.prpa.FakePersonGenerator.model.exceptions.GenericResourceNotFoundException;
-import com.prpa.FakePersonGenerator.model.exceptions.RegionExistsException;
+import com.prpa.FakePersonGenerator.model.exceptions.AlreadyExistsException;
 import com.prpa.FakePersonGenerator.repository.RegionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,7 +28,7 @@ public class RegionService {
 
     public Region save(String region) {
         if (regionRepository.existsByName(region)) {
-            throw new RegionExistsException(region);
+            throw new AlreadyExistsException(region);
         }
 
         return regionRepository.save(new Region(null, region));
