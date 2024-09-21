@@ -5,7 +5,7 @@ pessoas fícticias a partir dos dados presentes em seu banco de dados.
 
 Este projeto não possui mecanismos de validação, segurança, testes e estrutura para
 ser utilizado seriamente de proposito. Sua principal finalidade foi testar
-um pouco o OpenFeign em um projeto.
+um pouco o OpenFeign e o gradle em um projeto.
 
 É possivel acessar e testar os endpoints do projeto por meio do Swagger
 acessando a URL [Swagger](http://localhost:9999/swagger-ui/index.html).
