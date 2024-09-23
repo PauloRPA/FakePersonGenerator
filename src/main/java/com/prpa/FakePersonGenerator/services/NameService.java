@@ -3,6 +3,7 @@ package com.prpa.FakePersonGenerator.services;
 import com.prpa.FakePersonGenerator.model.Name;
 import com.prpa.FakePersonGenerator.model.Region;
 import com.prpa.FakePersonGenerator.model.dtos.NameDto;
+import com.prpa.FakePersonGenerator.model.enums.Gender;
 import com.prpa.FakePersonGenerator.model.exceptions.GenericResourceNotFoundException;
 import com.prpa.FakePersonGenerator.model.exceptions.AlreadyExistsException;
 import com.prpa.FakePersonGenerator.repository.NameRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -32,31 +34,32 @@ public class NameService {
     }
 
     public Name update(Long nameId, NameDto newName) {
-        Optional<Name> nameFound = nameRepository.findById(nameId);
-        Optional<Region> regionFound = regionService.findById(newName.getRegionId());
+        Optional<Name> nameById = nameRepository.findById(nameId);
+        Name nameFound = nameById.orElseThrow(() ->
+                new GenericResourceNotFoundException("Name %d not found.".formatted(nameId)));
 
-        if (nameFound.isEmpty())
-            throw new GenericResourceNotFoundException("Name %d not found.".formatted(nameId));
-        else if (regionFound.isEmpty()) {
-            throw new GenericResourceNotFoundException("Region with %d id not found.".formatted(newName.getRegionId()));
-        }
+        String nameToSave = Objects.requireNonNullElse(newName.getName(), nameFound.getName());
+        Gender genderToSave = Objects.requireNonNullElse(newName.getGender(), nameFound.getGender());
 
-        Name toSave = nameFound.get();
-        toSave.setName(newName.getName());
-        toSave.setRegion(regionFound.get());
-        toSave.setGender(newName.getGender());
+        Long regionIdToLookup = Objects.requireNonNullElse(newName.getRegionId(), nameFound.getRegion().getId());
+        Region regionToSave = regionService.findById(regionIdToLookup).orElseThrow(() ->
+                new GenericResourceNotFoundException("Region with %d id not found.".formatted(newName.getRegionId())));
 
-        Optional<Name> persistedNameToSave =
-                nameRepository.findByNameAndGenderAndRegion(toSave.getName(), toSave.getGender(), toSave.getRegion());
-        final boolean isPersistingSameName = nameId.equals(persistedNameToSave.map(Name::getId).orElse(Long.MIN_VALUE));
+        nameFound.setName(nameToSave);
+        nameFound.setRegion(regionToSave);
+        nameFound.setGender(genderToSave);
+
+        Optional<Name> queryToSameValue =
+                nameRepository.findByNameAndGenderAndRegion(nameFound.getName(), nameFound.getGender(), nameFound.getRegion());
+        final boolean isPersistingSameName = nameId.equals(queryToSameValue.map(Name::getId).orElse(Long.MIN_VALUE));
 
         if (isPersistingSameName)
-            return nameFound.get();
-        else if (persistedNameToSave.isPresent()) {
-            throw new AlreadyExistsException("name", toSave.getName());
+            return nameFound;
+        else if (queryToSameValue.isPresent()) {
+            throw new AlreadyExistsException("name", nameFound.getName());
         }
 
-        return nameRepository.save(toSave);
+        return nameRepository.save(nameFound);
     }
 
     public boolean remove(Long id) {
@@ -68,20 +71,18 @@ public class NameService {
     }
 
     public Name save(NameDto nameDto) {
-        Optional<Region> region = regionService.findById(nameDto.getRegionId());
+        Optional<Region> regionById = regionService.findById(nameDto.getRegionId());
+        Region regionFound = regionById.orElseThrow(() ->
+                new GenericResourceNotFoundException("Region with id %d not found".formatted(nameDto.getRegionId())));
 
-        if (region.isEmpty()) {
-            throw new GenericResourceNotFoundException("Region with id %d not found".formatted(nameDto.getRegionId()));
-        }
-
-        if (nameRepository.existsByNameAndGenderAndRegion(nameDto.getName(), nameDto.getGender(), region.get())) {
+        if (nameRepository.existsByNameAndGenderAndRegion(nameDto.getName(), nameDto.getGender(), regionFound)) {
             throw new AlreadyExistsException("name", nameDto.getName());
         }
 
         Name newName = Name.builder()
                 .name(nameDto.getName())
                 .gender(nameDto.getGender())
-                .region(region.get())
+                .region(regionFound)
                 .build();
 
         return nameRepository.save(newName);

@@ -31,7 +31,11 @@ public class GeneratorService {
     private final Random random;
 
     @Autowired
-    public GeneratorService(NameRepository nameRepository, LastnameRepository lastnameRepository, RegionRepository regionRepository, PictureService pictureService, RegionService regionService) {
+    public GeneratorService(NameRepository nameRepository,
+                            LastnameRepository lastnameRepository,
+                            RegionRepository regionRepository,
+                            PictureService pictureService,
+                            RegionService regionService) {
         this.nameRepository = nameRepository;
         this.lastnameRepository = lastnameRepository;
         this.regionRepository = regionRepository;
