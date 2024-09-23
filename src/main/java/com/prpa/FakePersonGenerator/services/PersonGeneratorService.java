@@ -27,7 +27,7 @@ public class PersonGeneratorService {
     public Person generate(long seed) {
         generatorService.setSeed(seed);
 
-        Region randomRegion = generatorService.getRandomRegion();
+        Region randomRegion = generatorService.getRandomReferencedRegion();
         Gender randomGender = generatorService.getRandomGender();
 
         LocalDate referenceDateForAge = LocalDate.now();
