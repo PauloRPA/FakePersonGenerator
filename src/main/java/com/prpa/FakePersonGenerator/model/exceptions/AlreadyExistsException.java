@@ -5,7 +5,6 @@ import lombok.Getter;
 @Getter
 public class AlreadyExistsException extends RuntimeException {
 
-
     private final String value;
     private final String field;
 
@@ -16,6 +15,7 @@ public class AlreadyExistsException extends RuntimeException {
     }
 
     public AlreadyExistsException(String field, String value) {
+        super("");
         this.field = field;
         this.value = value;
     }

@@ -3,12 +3,9 @@ package com.prpa.FakePersonGenerator.model;
 import com.prpa.FakePersonGenerator.model.enums.Gender;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Entity @Getter @Setter
+@Entity @Getter @Setter @Builder
 @NoArgsConstructor @AllArgsConstructor
 @Table(name = "name")
 public class Name {
@@ -20,7 +17,7 @@ public class Name {
     @NotBlank
     private String name;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "region_id", referencedColumnName = "id")
     private Region region;
 
