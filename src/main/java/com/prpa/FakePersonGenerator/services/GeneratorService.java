@@ -112,6 +112,23 @@ public class GeneratorService {
         return validRegion.get(randomIndex);
     }
 
+    public Region getRandomLastnameReferencedRegion() {
+        final int regionCount = (int) regionService.count();
+
+        if (regionCount < 1)
+            throw new EmptyDatabaseException("The region table is empty. Insert at least one Region to use this endpoint.");
+
+        List<Region> validRegion = regionRepository.findRegionsWithMoreThanOneLastname();
+        if (validRegion.isEmpty())
+            throw new EmptyDatabaseException("""
+                    There are no regions with at least one lastname referencing it.
+                    Insert at least one lastname referencing it to use this endpoint.
+                    """);
+
+        final int randomIndex = random.nextInt(validRegion.size());
+        return validRegion.get(randomIndex);
+    }
+
     public Gender getRandomGender() {
         Gender[] genders = Gender.values();
         return genders[getRandom().nextInt(genders.length) % genders.length];
