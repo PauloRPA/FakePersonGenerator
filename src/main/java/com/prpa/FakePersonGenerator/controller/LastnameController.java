@@ -3,7 +3,6 @@ package com.prpa.FakePersonGenerator.controller;
 import com.prpa.FakePersonGenerator.model.Lastname;
 import com.prpa.FakePersonGenerator.model.Region;
 import com.prpa.FakePersonGenerator.model.dtos.LastnameDto;
-import com.prpa.FakePersonGenerator.model.enums.Gender;
 import com.prpa.FakePersonGenerator.model.exceptions.GenericResourceNotFoundException;
 import com.prpa.FakePersonGenerator.services.GeneratorService;
 import com.prpa.FakePersonGenerator.services.LastnameService;
@@ -50,8 +49,8 @@ public class LastnameController {
 
     @GetMapping("/random")
     public ResponseEntity<Lastname> getRandomLastname(@RequestParam(value = "seed", required = false) String seed) {
+        generatorService.setSeed(seed);
         Region randomRegion = generatorService.getRandomLastnameReferencedRegion();
-
         Lastname randomLastname = generatorService.getRandomLastname(randomRegion);
         return ResponseEntity.ok(randomLastname);
     }

@@ -159,6 +159,14 @@ public class GeneratorService {
         this.random.setSeed(seed);
     }
 
+    public void setSeed(String seed) {
+        long seedNumber = new Random().nextLong();
+        if (seed != null && !seed.isBlank())
+            seedNumber = seed.chars().mapToLong(ch -> (long) ch).sum() + seed.hashCode();
+
+        this.setSeed(seedNumber);
+    }
+
     private Random getRandom() {
         return this.random;
     }

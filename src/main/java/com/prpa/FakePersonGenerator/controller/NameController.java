@@ -50,6 +50,7 @@ public class NameController {
 
     @GetMapping("/random")
     public ResponseEntity<Name> getRandomName(@RequestParam(value = "seed", required = false) String seed) {
+        generatorService.setSeed(seed);
         Gender randomGender = generatorService.getRandomGender();
         Region randomRegion = generatorService.getRandomNameReferencedRegion();
 

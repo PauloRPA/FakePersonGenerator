@@ -24,7 +24,7 @@ public class PersonGeneratorService {
         this.generatorService = generatorService;
     }
 
-    public Person generate(long seed) {
+    public Person generate(String seed) {
         generatorService.setSeed(seed);
 
         Region randomRegion = generatorService.getRandomReferencedRegion();
