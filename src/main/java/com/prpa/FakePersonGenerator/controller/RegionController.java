@@ -35,6 +35,7 @@ public class RegionController {
 
     @GetMapping("/random")
     public ResponseEntity<Region> getRandomRegion(@RequestParam(value = "seed", required = false) String seed) {
+        generatorService.setSeed(seed);
         Region randomRegion = generatorService.getRandomRegion();
         return ResponseEntity.ok(randomRegion);
     }

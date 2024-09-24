@@ -24,10 +24,10 @@ public class PersonGeneratorService {
         this.generatorService = generatorService;
     }
 
-    public Person generate(long seed) {
+    public Person generate(String seed) {
         generatorService.setSeed(seed);
 
-        Region randomRegion = generatorService.getRandomRegion();
+        Region randomRegion = generatorService.getRandomReferencedRegion();
         Gender randomGender = generatorService.getRandomGender();
 
         LocalDate referenceDateForAge = LocalDate.now();
